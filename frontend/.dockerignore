@@ -1,0 +1,12 @@
+# Ignore dependencies, they'll be installed in the container
+node_modules/
+
+# Ignore production build output, it's generated in the container
+build/
+
+# misc
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

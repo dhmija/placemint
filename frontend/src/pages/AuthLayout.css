@@ -1,0 +1,68 @@
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Left panel will now use the Bennett dark blue */
+.auth-left-panel {
+  width: 45%;
+  background-color: #0d47a1; 
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+  box-sizing: border-box;
+}
+
+.auth-left-panel img {
+  width: 150px;
+  height: auto;
+  margin-bottom: 24px;
+  /* Use user's purple logo on the blue background */
+}
+
+.auth-left-panel h4 {
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.auth-left-panel p {
+  font-size: 1.1rem;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.auth-right-panel {
+  width: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .auth-left-panel {
+    display: none;
+  }
+  .auth-right-panel {
+    width: 100%;
+    padding: 24px;
+  }
+  .auth-form-container {
+    max-width: 100%;
+  }
+}

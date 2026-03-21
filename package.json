@@ -1,0 +1,22 @@
+{
+  "name": "placemint",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "seed:tpo": "node scripts/seed-tpo.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "microservices",
+    "placement",
+    "mern"
+  ],
+  "author": "Maintainer",
+  "license": "ISC",
+  "description": "Production-ready MERN microservices platform for placement management",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.3.1",
+    "mongoose": "^9.3.3"
+  }
+}

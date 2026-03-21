@@ -1,0 +1,8 @@
+{
+  "short_name": "Plac Portal",
+  "name": "Placement Portal",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4a148c",
+  "background_color": "#c11e16ff"
+}
