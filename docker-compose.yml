@@ -16,6 +16,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       REDIS_URL: ${REDIS_URL}
       RABBITMQ_URL: ${RABBITMQ_URL}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
       MAIL_USER: ${MAIL_USER}
       MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
@@ -103,6 +105,11 @@ services:
       MONGO_URI: ${MONGO_URI_NOTIFY}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       RABBITMQ_URL: ${RABBITMQ_URL}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+      MAIL_FROM: ${MAIL_FROM}
     depends_on:
       mongo:
         condition: service_healthy
