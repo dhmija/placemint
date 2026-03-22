@@ -3,10 +3,13 @@ const logger = require('../config/logger');
 
 const sendEmail = async (to, subject, html) => {
   try {
+    const port = Number(process.env.MAIL_PORT || 587);
+    const secure = process.env.MAIL_SECURE === 'true' || port === 465;
+
     const transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST || 'smtp.gmail.com',
-      port: process.env.MAIL_PORT || 587,
-      secure: false, // true for 465, false for 587
+      port,
+      secure,
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS, // Your Gmail App Password
