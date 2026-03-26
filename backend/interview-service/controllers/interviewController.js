@@ -12,6 +12,46 @@ const cleanChatHistory = (history) => {
   }));
 };
 
+const extractGeminiText = (result) => {
+  return result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+};
+
+const isLowEffortAnswer = (answer = '') => {
+  const text = answer.trim().toLowerCase();
+  if (!text) return true;
+  if (text.length < 15) return true;
+
+  const placeholders = new Set(['a', 'ok', 'hmm', 'idk', 'abc', 'bc', 'xyz', 'na']);
+  return placeholders.has(text);
+};
+
+const buildInterviewSummary = (history = []) => {
+  const userAnswers = history
+    .filter((item) => item.role === 'user')
+    .map((item) => (item.parts?.[0]?.text || '').trim())
+    .filter(Boolean);
+
+  if (!userAnswers.length) {
+    return {
+      score: 20,
+      feedback: 'Interview ended before enough responses were provided. Complete more rounds for meaningful assessment.',
+    };
+  }
+
+  const lowEffortCount = userAnswers.filter(isLowEffortAnswer).length;
+  const qualityRatio = 1 - lowEffortCount / userAnswers.length;
+  const score = Math.max(35, Math.min(95, Math.round(45 + qualityRatio * 45 + userAnswers.length * 2)));
+
+  let feedback = 'Good participation. Keep adding more depth and concrete examples in your answers.';
+  if (lowEffortCount === 0 && userAnswers.length >= 4) {
+    feedback = 'Strong interview effort with consistently detailed answers. Continue sharpening clarity and structure for senior-level rounds.';
+  } else if (lowEffortCount > 0) {
+    feedback = 'Some answers were too brief or generic. Improve by explaining your approach, trade-offs, and implementation details.';
+  }
+
+  return { score, feedback };
+};
+
 // System instruction for different roles
 const getSystemInstruction = (topic, company = 'Google') => {
   const roleDescriptions = {
@@ -90,7 +130,10 @@ const callGeminiAPI = async (chatHistory) => {
     }
 
     const result = await response.json();
-    const aiResponse = result.candidates[0].content.parts[0].text;
+    const aiResponse = extractGeminiText(result);
+    if (!aiResponse) {
+      throw new Error('Gemini API returned empty content');
+    }
     return aiResponse;
   } catch (error) {
     logger.error(`Error calling Gemini API: ${error.message}`);
@@ -204,6 +247,13 @@ exports.handleStudentAnswer = async (req, res) => {
       return res.status(400).json({ message: 'Interview ID and answer required' });
     }
 
+    const normalizedAnswer = answer.trim();
+    if (isLowEffortAnswer(normalizedAnswer)) {
+      return res.status(400).json({
+        message: 'Answer is too short. Please provide a clearer technical explanation before continuing.',
+      });
+    }
+
     // Fetch interview
     const interview = await Interview.findById(interviewId);
     if (!interview) {
@@ -218,7 +268,7 @@ exports.handleStudentAnswer = async (req, res) => {
     let chatHistory = [...interview.history];
     chatHistory.push({
       role: 'user',
-      parts: [{ text: answer }],
+      parts: [{ text: normalizedAnswer }],
     });
 
     // Get AI response with system instruction
@@ -246,7 +296,10 @@ exports.handleStudentAnswer = async (req, res) => {
     }
 
     const result = await response.json();
-    const aiResponse = result.candidates[0].content.parts[0].text;
+    const aiResponse = extractGeminiText(result);
+    if (!aiResponse) {
+      return res.status(500).json({ message: 'Failed to get AI response' });
+    }
 
     // Add AI response to history
     chatHistory.push({
@@ -287,6 +340,9 @@ exports.endInterview = async (req, res) => {
     interview.status = 'completed';
     interview.endTime = new Date();
     interview.duration = Math.round((interview.endTime - interview.startTime) / 1000);
+    const summary = buildInterviewSummary(interview.history);
+    interview.score = summary.score;
+    interview.feedback = summary.feedback;
 
     await interview.save();
     logger.info(`Interview ${interviewId} completed`);
