@@ -17,7 +17,7 @@ import {
   Chip
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getApplicationById, getApplicationByJobAndStudent, updateApplicationStatus, getStudentQuizResult, getStudentTaskResult } from '../services/api';
+import { getApplicationById, getApplicationByJobAndStudent, updateApplicationStatus, getStudentQuizResult, getStudentTaskResult, buildGatewayUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 // This page is a bit of a hack. The *right* way to get here
@@ -138,7 +138,7 @@ const StudentApplicationPage = () => {
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Button 
-                href={`http://localhost:5000${application.resumeURL}`}
+                href={buildGatewayUrl(application.resumeURL)}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="contained"

@@ -20,7 +20,7 @@ import {
   Stack
 } from '@mui/material';
 import { useParams, Link as RouterLink } from 'react-router-dom';
-import { getApplicationsForJob, updateApplicationStatus, getJobById } from '../services/api';
+import { getApplicationsForJob, updateApplicationStatus, getJobById, buildGatewayUrl } from '../services/api';
 import { Assessment, Code } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 
@@ -140,7 +140,7 @@ const JobApplicantsPage = () => {
                   <TableCell>{app.studentProfile?.gpa || 'N/A'}</TableCell>
                   <TableCell>
                     <MuiLink
-                      href={`http://localhost:5000${app.resumeURL}`}
+                      href={buildGatewayUrl(app.resumeURL)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

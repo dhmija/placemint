@@ -1,7 +1,13 @@
 import axios from 'axios';
 
-// The API Gateway URL
-const API_URL = 'http://localhost:5000/api';
+const DEFAULT_API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || DEFAULT_API_URL;
+export const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
+export const buildGatewayUrl = (path = '') => {
+  if (!path) return API_ORIGIN;
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_ORIGIN}${path.startsWith('/') ? '' : '/'}${path}`;
+};
 
 const api = axios.create({
   baseURL: API_URL,

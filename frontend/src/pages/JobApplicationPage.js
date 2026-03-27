@@ -15,7 +15,7 @@ import {
   Button
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getApplicationById, updateApplicationStatus, getMyResult, getMyTaskResult } from '../services/api';
+import { getApplicationById, updateApplicationStatus, getMyResult, getMyTaskResult, buildGatewayUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const StudentApplicationPage = () => {
@@ -107,7 +107,7 @@ const StudentApplicationPage = () => {
             <Typography variant="body1"><strong>Skills:</strong> {profile?.skills.join(', ')}</Typography>
             <Box sx={{ mt: 2 }}>
               <Button 
-                href={`http://localhost:5000${application.resumeURL}`}
+                href={buildGatewayUrl(application.resumeURL)}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="contained"

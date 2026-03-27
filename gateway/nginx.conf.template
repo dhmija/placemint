@@ -1,0 +1,111 @@
+server {
+    listen 80;
+    server_name _;
+    client_max_body_size 10M;
+
+    add_header 'Access-Control-Allow-Origin' $http_origin always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS, PATCH' always;
+    add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Student-Id' always;
+    add_header 'Access-Control-Max-Age' 86400 always;
+    add_header 'Access-Control-Allow-Credentials' 'true' always;
+
+    proxy_set_header Authorization $http_authorization;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Student-Id $http_x_student_id;
+    proxy_hide_header Access-Control-Allow-Origin;
+    proxy_hide_header Access-Control-Allow-Methods;
+    proxy_hide_header Access-Control-Allow-Headers;
+    proxy_hide_header Access-Control-Max-Age;
+    proxy_hide_header Access-Control-Allow-Credentials;
+
+    location /health {
+        return 200 'API Gateway OK';
+        add_header Content-Type text/plain;
+    }
+
+    location ~ ^/api/auth(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/auth(/.*) $1 break;
+        rewrite ^/api/auth$ / break;
+        proxy_pass ${AUTH_SERVICE_URL};
+    }
+
+    location ~ ^/api/profile(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/profile(/.*) $1 break;
+        rewrite ^/api/profile$ / break;
+        proxy_pass ${PROFILE_SERVICE_URL};
+    }
+
+    location /uploads {
+        proxy_pass ${PROFILE_SERVICE_URL};
+    }
+
+    location ~ ^/api/jobs(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/jobs(/.*) $1 break;
+        rewrite ^/api/jobs$ / break;
+        proxy_pass ${JOB_SERVICE_URL};
+    }
+
+    location ~ ^/api/applications(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/applications(/.*) $1 break;
+        rewrite ^/api/applications$ / break;
+        proxy_pass ${APPLICATION_SERVICE_URL};
+    }
+
+    location ~ ^/api/notifications(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/notifications(/.*) $1 break;
+        rewrite ^/api/notifications$ / break;
+        proxy_pass ${NOTIFICATION_SERVICE_URL};
+    }
+
+    location ~ ^/api/skills(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/skills(/.*) $1 break;
+        rewrite ^/api/skills$ / break;
+        proxy_pass ${SKILLS_SERVICE_URL};
+    }
+
+    location ~ ^/api/quiz(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/quiz(/.*) $1 break;
+        rewrite ^/api/quiz$ / break;
+        proxy_pass ${QUIZ_SERVICE_URL};
+    }
+
+    location ~ ^/api/announcements(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/announcements(/.*) $1 break;
+        rewrite ^/api/announcements$ / break;
+        proxy_pass ${ANNOUNCEMENT_SERVICE_URL};
+    }
+
+    location ~ ^/api/hackathons(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/hackathons(/.*) $1 break;
+        rewrite ^/api/hackathons$ / break;
+        proxy_pass ${HACKATHON_SERVICE_URL};
+    }
+
+    location ~ ^/api/tasks(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/tasks(/.*) $1 break;
+        rewrite ^/api/tasks$ / break;
+        proxy_pass ${TASK_SERVICE_URL};
+    }
+
+    location ~ ^/api/interview(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/interview(/.*) $1 break;
+        rewrite ^/api/interview$ / break;
+        proxy_pass ${INTERVIEW_SERVICE_URL};
+    }
+
+    location /api/messaging/ {
+        if ($request_method = 'OPTIONS') { return 204; }
+        proxy_pass ${MESSAGING_SERVICE_URL}/;
+    }
+}
