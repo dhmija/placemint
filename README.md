@@ -115,6 +115,13 @@ The `notification-service` uses Gmail SMTP through Nodemailer.
 
 If using a Gmail account with 2-factor authentication enabled, create an App Password and use it in `GMAIL_PASS` instead of your normal Gmail password.
 
+### Recent Updates
+
+- Unified email templates around Gmail SMTP variables (`MAIL_HOST`, `MAIL_PORT`, `MAIL_USER`, `MAIL_PASS`, `MAIL_FROM`) across services.
+- Added Docker env wiring updates for auth and notification services to avoid local startup mismatch.
+- Improved Gemini interview lifecycle with stricter low-effort answer checks and auto-generated score/feedback at interview end.
+- Removed stale SendGrid dependency from auth-service after SMTP migration.
+
 ### 2. Seed the TPO Admin User
 A secure script is provided to seed the initial TPO (Placement Cell) Admin account using the credentials defined in your `.env`.
 ```bash
@@ -125,6 +132,17 @@ npm run seed:tpo
 ### 3. Spin Up the Cluster
 ```bash
 docker compose up -d --build
+```
+
+If services fail at boot due to missing values, verify root `.env` has mail and AI keys populated:
+
+```env
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=your_email@gmail.com
+MAIL_PASS=your_gmail_app_password
+MAIL_FROM=your_email@gmail.com
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 - **Frontend UI:** `http://localhost:3000`
