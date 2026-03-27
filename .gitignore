@@ -7,16 +7,25 @@ node_modules/
 /frontend/build/
 dist/
 build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
 
 # Logs
 logs/
 *.log
 *.log.*
 *.gz
+*.pid
 /backend/*/logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Temp files
+tmp/
+temp/
+*.tmp
 
 # Environment variables
 .env
@@ -29,6 +38,7 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+*.swp
 
 # Docker Volumes
 profile-uploads/
