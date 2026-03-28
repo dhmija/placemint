@@ -85,7 +85,7 @@ const HomePage = () => {
             <img 
               src={Logo} 
               alt="Logo" 
-              style={{ width: 100, height: 'auto', filter: 'brightness(0) invert(1)' }} 
+              style={{ width: 100, height: 'auto'}} 
             />
           </Box>
           <Typography 
