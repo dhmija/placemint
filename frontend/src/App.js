@@ -66,7 +66,7 @@ const App = () => {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Protected Routes */}
-      <Route element={<ProtectedRoute roles={['student', 'recruiter', 'placementcell', 'verifier']} />}>
+      <Route element={<ProtectedRoute roles={['student', 'recruiter', 'placementcell']} />}>
         <Route element={<NavbarWrapper />}>
           {/* Student Routes */}
           <Route path="/dashboard" element={<StudentDashboardPage />} />

@@ -75,7 +75,7 @@ const LoginPage = () => {
   return (
     <div className="auth-layout">
       <div className="auth-left-panel">
-        <img src={Logo} alt="Logo" />
+        <Link component={RouterLink} to="/" underline="none" aria-label="Go to homepage"> <img src={Logo} alt="Logo" style={{ cursor: 'pointer' }} /> </Link>
         <Typography variant="h4" component="h1">
           Bennett University Placement Portal
         </Typography>
@@ -100,7 +100,6 @@ const LoginPage = () => {
               <Tab label="Student" value="student" />
               <Tab label="Recruiter" value="recruiter" />
               <Tab label="Coordinator" value="placementcell" />
-              <Tab label="Verifier" value="verifier" />
             </Tabs>
           </Box>
           

@@ -78,9 +78,6 @@ export const AuthProvider = ({ children }) => {
       case 'placementcell':
         navigate('/tpo/dashboard');
         break;
-      case 'verifier':
-        navigate('/dashboard'); // Or a specific verifier page
-        break;
       default:
         navigate('/');
     }
