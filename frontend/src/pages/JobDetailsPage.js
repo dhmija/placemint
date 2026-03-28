@@ -10,12 +10,10 @@ import {
   Divider,
   Grid,
   Chip,
-  Stack,
-  Card,
-  CardContent
+  Stack
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getJobById, applyToJob, getMyApplications } from '../services/api';
+import { getJobById, getMyApplications } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Business, LocationOn, Work, School } from '@mui/icons-material';
 

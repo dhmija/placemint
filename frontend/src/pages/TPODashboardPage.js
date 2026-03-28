@@ -20,7 +20,7 @@ import {
   Chip,
   Divider
 } from '@mui/material';
-import { Edit, Delete, People, Add, Assessment, Code, Dashboard } from '@mui/icons-material';
+import { Edit, Delete, People, Add, Dashboard } from '@mui/icons-material';
 import { getAllJobs, getAllProfiles, deleteJob, getAllAnnouncements, deleteAnnouncement } from '../services/api';
 import { Link as RouterLink } from 'react-router-dom';
 

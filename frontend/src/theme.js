@@ -5,7 +5,6 @@ const primaryColor = '#0d47a1'; // Dark Blue (headings)
 const secondaryColor = '#d32f2f'; // Strong Red (borders & accents)
 const pageBackground = '#f5f5f5'; // Very light grey (page background)
 const containerBackground = '#ffffff'; // White for outer containers
-const innerContainerBackground = '#f0f0f0'; // Light grey for inner containers
 const outerBorderColor = '#e0e0e0'; // Subtle grey borders on outer containers
 const innerBorderColor = '#e0e0e0'; // Subtle grey borders on inner containers
 

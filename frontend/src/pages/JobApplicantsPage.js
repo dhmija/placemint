@@ -53,6 +53,7 @@ const JobApplicantsPage = () => {
 
   useEffect(() => {
     fetchApplicants();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleStatusChange = async (appId, newStatus) => {

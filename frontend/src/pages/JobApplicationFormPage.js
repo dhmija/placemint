@@ -13,19 +13,12 @@ import {
   Card,
   CardContent,
   Stack,
-  Stepper,
-  Step,
-  StepLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
+  Chip
 } from '@mui/material';
-import { Chip } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getJobById, applyToJob, getMyResult, getMyTaskResult } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { ArrowBack, Send, CheckCircle, School, Code } from '@mui/icons-material';
+import { ArrowBack, Send } from '@mui/icons-material';
 
 const JobApplicationFormPage = () => {
   const { jobId } = useParams();
@@ -35,11 +28,8 @@ const JobApplicationFormPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
-  const [activeStep, setActiveStep] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [taskCompleted, setTaskCompleted] = useState(false);
-  const [quizDialog, setQuizDialog] = useState(false);
-  const [taskDialog, setTaskDialog] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -98,32 +88,12 @@ const JobApplicationFormPage = () => {
     checkAssessments();
   }, [job, jobId]);
 
-  const handleQuizClick = () => {
-    setQuizDialog(true);
-  };
-
-  const handleTaskClick = () => {
-    setTaskDialog(true);
-  };
-
   const handleStartQuiz = () => {
     navigate(`/quizzes/take/${jobId}`);
   };
 
   const handleStartTask = () => {
     navigate(`/tasks/take/${jobId}`);
-  };
-
-  const handleNextStep = () => {
-    if (activeStep < steps.length - 1) {
-      setActiveStep(activeStep + 1);
-    }
-  };
-
-  const handlePreviousStep = () => {
-    if (activeStep > 0) {
-      setActiveStep(activeStep - 1);
-    }
   };
 
   const handleSubmit = async (e) => {

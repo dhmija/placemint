@@ -149,6 +149,7 @@ const MessagingDrawer = ({ open, onClose, onOpen }) => {
       fetchMyProfile();
       if (onOpen) onOpen();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   return (

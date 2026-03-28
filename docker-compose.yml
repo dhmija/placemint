@@ -222,7 +222,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       PORT: 5011
-      MONGO_URI: ${MONGO_URI_INTERVIEW}
+      MONGO_URI_INTERVIEW: mongodb://mongo:27017/interview-service
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
     depends_on:

@@ -40,6 +40,7 @@ const HackathonRegistrationPage = () => {
   useEffect(() => {
     fetchHackathonDetails();
     checkRegistrationStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hackathonId, user]);
 
   const checkRegistrationStatus = async () => {

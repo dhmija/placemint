@@ -6,7 +6,6 @@ import {
   MenuItem,
   Typography,
   List,
-  ListItem,
   ListItemText,
   Divider,
   CircularProgress,

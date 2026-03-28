@@ -17,7 +17,7 @@ import {
   Tooltip,
   Divider
 } from '@mui/material';
-import { Add, Edit, Delete, People, Assessment, AddTask, Code, WorkOutlineIcon } from '@mui/icons-material';
+import { Add, Edit, Delete, People, Assessment, AddTask, Code } from '@mui/icons-material';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
 import { getMyJobs, deleteJob } from '../services/api';
 import { Link as RouterLink } from 'react-router-dom';

@@ -57,6 +57,7 @@ const InterviewHistoryPage = () => {
     };
 
     fetchInterviews();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleViewDetailsAsync = async (interviewId) => {

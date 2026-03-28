@@ -43,3 +43,5 @@ Thumbs.db
 # Docker Volumes
 profile-uploads/
 mongo-data/
+.vercel
+.env*.local

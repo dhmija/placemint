@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, Container, Card, CardContent, Grid, Paper } from '@mui/material';
+import { Box, Typography, Button, Container, Card, CardContent, Grid } from '@mui/material';
 import TopCompanies from '../components/TopCompanies';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';

@@ -7,7 +7,6 @@ import {
   Alert,
   Paper,
   Grid,
-  Link as MuiLink,
   Select,
   MenuItem,
   FormControl,
@@ -17,7 +16,7 @@ import {
   Chip
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getApplicationById, getApplicationByJobAndStudent, updateApplicationStatus, getStudentQuizResult, getStudentTaskResult, buildGatewayUrl } from '../services/api';
+import { getApplicationById, updateApplicationStatus, getStudentQuizResult, getStudentTaskResult, buildGatewayUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 // This page is a bit of a hack. The *right* way to get here

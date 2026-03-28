@@ -11,8 +11,7 @@ import {
   IconButton,
   RadioGroup,
   FormControlLabel,
-  Radio,
-  Divider,
+  Radio
 } from '@mui/material';
 import { AddCircle, Delete, Save } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -31,10 +30,6 @@ const QuizCreatePage = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
   const { user } = useAuth();
-  
-  const dashboardUrl = user?.role === 'recruiter' ? '/admin/dashboard' : '/tpo/dashboard';
-  const editJobUrl = user?.role === 'recruiter' ? `/admin/job/edit/${id}` : `/tpo/job/edit/${id}`;
-
 
   useEffect(() => {
     const fetchJobAndQuiz = async () => {
@@ -114,7 +109,7 @@ const QuizCreatePage = () => {
       await updateJob(id, { ...job, quiz: newQuiz._id });
       
       setSuccess('Quiz created and linked to job successfully!');
-      setTimeout(() => navigate(editJobUrl), 2000);
+      setTimeout(() => navigate(user?.role === 'recruiter' ? `/admin/job/edit/${id}` : `/tpo/job/edit/${id}`), 2000);
 
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create quiz.');
@@ -122,7 +117,7 @@ const QuizCreatePage = () => {
     setLoading(false);
   };
 
-  if (loading && !job && !error) {
+    if (loading && !job && !error) {
     return <Box display="flex" justifyContent="center" mt={5}><CircularProgress /></Box>;
   }
   
@@ -130,7 +125,7 @@ const QuizCreatePage = () => {
     return (
       <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
         <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
-        <Button onClick={() => navigate(editJobUrl)} sx={{ mt: 2 }}>Back to Job</Button>
+        <Button onClick={() => navigate(user?.role === 'recruiter' ? `/admin/job/edit/${id}` : `/tpo/job/edit/${id}`)} sx={{ mt: 2 }}>Back to Job</Button>
       </Container>
     );
   }
@@ -143,7 +138,7 @@ const QuizCreatePage = () => {
            This job already has a quiz. To create a new one, please create a new job.
            (Editing functionality is a future enhancement).
          </Alert>
-         <Button onClick={() => navigate(editJobUrl)} sx={{ mt: 2 }}>Back to Job</Button>
+         <Button onClick={() => navigate(user?.role === 'recruiter' ? `/admin/job/edit/${id}` : `/tpo/job/edit/${id}`)} sx={{ mt: 2 }}>Back to Job</Button>
        </Container>
      )
   }

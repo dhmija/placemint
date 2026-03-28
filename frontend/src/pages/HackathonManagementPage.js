@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   Container,
-  Card,
-  CardContent,
   Button,
   TextField,
   Box,
   Typography,
   Alert,
   CircularProgress,
-  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -23,14 +20,11 @@ import {
   Paper,
   Chip,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { createHackathon, getAllHackathons, updateHackathon, deleteHackathon } from '../services/api';
 
 const HackathonManagementPage = () => {
-  const navigate = useNavigate();
-
   const [hackathons, setHackathons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);

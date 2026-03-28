@@ -53,7 +53,8 @@ export const AuthProvider = ({ children }) => {
       }
     }
     setLoading(false);
-  }, [setAuthData]); // Removed `logout` dependency
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setAuthData]);
 
   // login, register, submitOtp are now handled in their respective pages
   // to allow for more complex logic (like redirects)

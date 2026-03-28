@@ -12,22 +12,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Link,
   Chip
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getTaskResults, getMyProfile } from '../services/api'; // We need profile for names
-import { useAuth } from '../context/AuthContext';
+import { useParams } from 'react-router-dom';
+import { getTaskResults } from '../services/api'; // We need profile for names
 
 const TaskScoreboardPage = () => {
   const { id } = useParams(); // Job ID
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  
-  const applicationUrl = (appId) => user.role === 'recruiter' ? `/admin/application/${appId}` : `/tpo/application/${appId}`;
 
   useEffect(() => {
     const fetchResults = async () => {

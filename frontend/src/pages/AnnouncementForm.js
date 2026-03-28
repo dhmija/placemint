@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   CircularProgress,
-  Box,
   Alert,
   Paper,
   FormControl,
