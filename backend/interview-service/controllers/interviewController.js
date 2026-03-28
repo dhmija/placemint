@@ -281,7 +281,7 @@ exports.handleStudentAnswer = async (req, res) => {
       systemInstruction: systemInstruction,
     };
 
-    logger.info(`Sending to Gemini API: ${JSON.stringify(payload).substring(0, 200)}...`);
+    logger.info(`Sending to Gemini API for interview ${interviewId} with ${chatHistory.length} messages`);
 
     const response = await fetch(apiUrl, {
       method: 'POST',
