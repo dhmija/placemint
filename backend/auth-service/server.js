@@ -1,9 +1,12 @@
 require('dotenv').config(); 
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const path = require('path');
 const connectDB = require('./config/db');
 const { connectRedis } = require('./config/redisClient');
 const logger = require('./config/logger');
+const { protect, checkRole } = require('./middleware/authMiddleware');
 
 // --- Connect to Databases ---
 connectDB();
@@ -20,7 +23,20 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
 };
 app.use(cors(corsOptions));
-app.use(express.json()); 
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// --- Profile Database Connection ---
+const MONGO_URI_PROFILE = process.env.MONGO_URI_PROFILE || process.env.MONGO_URI;
+const profileDB = mongoose.createConnection(MONGO_URI_PROFILE);
+profileDB.on('connected', () => logger.info('Profile DB connected'));
+profileDB.on('error', (err) => logger.error(`Profile DB error: ${err.message}`));
+
+// --- Profile Model & Controllers ---
+const profileSchema = require('./modules/profile/models/profileModel');
+const Profile = profileDB.model('Profile', profileSchema);
+const profileController = require('./modules/profile/controllers/profileController')(Profile, logger);
+const { uploadResume } = require('./modules/profile/middleware/uploadMiddleware');
 
 // --- Routes ---
 app.get('/health', (req, res) => {
@@ -28,6 +44,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/', require('./routes/userRoutes'));
+app.use('/profile', require('./modules/profile/routes/profileRoutes')(profileController, { protect, checkRole }, uploadResume));
 
 // --- Global Error Handler ---
 app.use((err, req, res, next) => {

@@ -59,17 +59,11 @@ Common values:
 
 Internal URLs for service-to-service calls should use Railway private networking, for example:
 - AUTH_SERVICE_URL=http://auth-service.railway.internal:5001
-- PROFILE_SERVICE_URL=http://profile-service.railway.internal:5002
 - JOB_SERVICE_URL=http://job-service.railway.internal:5003
 - APPLICATION_SERVICE_URL=http://application-service.railway.internal:5004
 - NOTIFICATION_SERVICE_URL=http://notification-service.railway.internal:5005
-- SKILLS_SERVICE_URL=http://skills-service.railway.internal:5006
-- QUIZ_SERVICE_URL=http://quiz-service.railway.internal:5007
-- ANNOUNCEMENT_SERVICE_URL=http://announcement-service.railway.internal:5008
-- HACKATHON_SERVICE_URL=http://hackathon-service.railway.internal:5009
-- TASK_SERVICE_URL=http://task-service.railway.internal:5010
+- SUPPORT_SERVICE_URL=http://support-service.railway.internal:5006
 - INTERVIEW_SERVICE_URL=http://interview-service.railway.internal:5011
-- MESSAGING_SERVICE_URL=http://messaging-service.railway.internal:5012
 
 ## 4) Deploy API Gateway on Railway
 
@@ -79,17 +73,11 @@ Create another Railway service from this repo:
 
 Set these gateway env vars to route traffic:
 - AUTH_SERVICE_URL
-- PROFILE_SERVICE_URL
 - JOB_SERVICE_URL
 - APPLICATION_SERVICE_URL
 - NOTIFICATION_SERVICE_URL
-- SKILLS_SERVICE_URL
-- QUIZ_SERVICE_URL
-- ANNOUNCEMENT_SERVICE_URL
-- HACKATHON_SERVICE_URL
-- TASK_SERVICE_URL
+- SUPPORT_SERVICE_URL
 - INTERVIEW_SERVICE_URL
-- MESSAGING_SERVICE_URL
 
 Use the private Railway URLs shown in section 3.
 

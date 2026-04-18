@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 const sendEmail = require('../utils/sendEmail');
-const { redisClient } = require('../config/redisClient');
+const { redisClient, acquireLock, releaseLock } = require('../config/redisClient');
 const logger = require('../config/logger');
 
 const TPO_ADMIN_EMAIL = process.env.TPO_ADMIN_EMAIL;
@@ -182,7 +182,14 @@ exports.verifyOTP = async (req, res) => {
   }
 
   const { email, otp } = req.body;
-  const otpKey = `otp:${email.toLowerCase()}`;
+  const normalizedEmail = email.toLowerCase();
+  const otpKey = `otp:${normalizedEmail}`;
+  const lockKey = `otp:${normalizedEmail}`;
+
+  const locked = await acquireLock(lockKey, 10);
+  if (!locked) {
+    return res.status(429).json({ message: 'Request already processing' });
+  }
 
   try {
     const storedOtp = await redisClient.get(otpKey);
@@ -229,6 +236,8 @@ exports.verifyOTP = async (req, res) => {
   } catch (error) {
     logger.error(`Error in verifyOTP: ${error.message}`, { email, stack: error.stack });
     res.status(500).json({ message: 'Server error during OTP verification' });
+  } finally {
+    await releaseLock(lockKey);
   }
 };
 

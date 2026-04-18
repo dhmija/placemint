@@ -23,4 +23,16 @@ const connectRedis = async () => {
   }
 };
 
-module.exports = { redisClient, connectRedis };
+const acquireLock = async (key, ttlSeconds = 10) => {
+  const result = await redisClient.set(`lock:${key}`, '1', {
+    NX: true,
+    EX: ttlSeconds,
+  });
+  return result === 'OK';
+};
+
+const releaseLock = async (key) => {
+  await redisClient.del(`lock:${key}`);
+};
+
+module.exports = { redisClient, connectRedis, acquireLock, releaseLock };

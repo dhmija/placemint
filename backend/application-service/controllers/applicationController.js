@@ -3,7 +3,7 @@ const logger = require('../config/logger');
 const axios = require('axios');
 
 // URLs for internal service communication
-const PROFILE_SERVICE_URL = process.env.PROFILE_SERVICE_URL;
+const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 const JOB_SERVICE_URL = process.env.JOB_SERVICE_URL;
 const NOTIFICATION_SERVICE_URL = process.env.NOTIFICATION_SERVICE_URL;
 
@@ -51,10 +51,10 @@ exports.applyToJob = async (req, res) => {
       return res.status(404).json({ message: 'Job not found.' });
     }
 
-    // --- Step 2: Get student's profile (call profile-service) ---
+    // --- Step 2: Get student's profile (call auth-service) ---
     let profile;
     try {
-      const profileResponse = await authAxios.get(`${PROFILE_SERVICE_URL}/me`);
+      const profileResponse = await authAxios.get(`${AUTH_SERVICE_URL}/profile/me`);
       profile = profileResponse.data;
     } catch (err) {
       logger.warn(`Apply failed: Profile not found for user ${studentId}`);
@@ -158,13 +158,13 @@ exports.getApplicationsForJob = async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    // --- Step 3: Get profile details for each applicant (call profile-service) ---
+    // --- Step 3: Get profile details for each applicant (call auth-service) ---
     // This data will be used to populate the scoreboard on the frontend
     const enrichedApplications = await Promise.all(
       applications.map(async (app) => {
         try {
-          // Use the internal /user/:userId route
-          const profileRes = await authAxios.get(`${PROFILE_SERVICE_URL}/user/${app.student}`);
+          // Use the internal /profile/user/:userId route
+          const profileRes = await authAxios.get(`${AUTH_SERVICE_URL}/profile/user/${app.student}`);
           return { ...app, studentProfile: profileRes.data };
         } catch (err) {
           logger.warn(`Could not fetch profile for student ${app.student}`);
@@ -210,7 +210,7 @@ exports.getApplicationById = async (req, res) => {
     // --- Step 2: Enrich with student profile data ---
     let profile;
     try {
-      const profileRes = await authAxios.get(`${PROFILE_SERVICE_URL}/user/${application.student}`);
+      const profileRes = await authAxios.get(`${AUTH_SERVICE_URL}/profile/user/${application.student}`);
       profile = profileRes.data;
     } catch (err) {
       logger.warn(`Could not fetch profile for student ${application.student}`);
@@ -304,7 +304,7 @@ exports.getApplicationByJobAndStudent = async (req, res) => {
     // Enrich with student profile
     let profile;
     try {
-      const profileRes = await authAxios.get(`${PROFILE_SERVICE_URL}/user/${application.student}`);
+      const profileRes = await authAxios.get(`${AUTH_SERVICE_URL}/profile/user/${application.student}`);
       profile = profileRes.data;
     } catch (err) {
       profile = null;

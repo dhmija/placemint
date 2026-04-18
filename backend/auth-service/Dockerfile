@@ -7,8 +7,8 @@ WORKDIR /app/auth-service
 # Copy package.json and package-lock.json (if it exists)
 COPY package*.json ./
 
-# Install dependencies using npm ci for production
-RUN npm ci --only=production
+# Install dependencies without requiring a perfectly synced lockfile
+RUN npm install --omit=dev
 
 # Copy the rest of the application's source code
 COPY . .

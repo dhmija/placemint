@@ -5,7 +5,7 @@ const connectDB = require('./config/db');
 const logger = require('./config/logger');
 
 // --- Service URL Checks ---
-if (!process.env.AUTH_SERVICE_URL || !process.env.PROFILE_SERVICE_URL || !process.env.JOB_SERVICE_URL) {
+if (!process.env.AUTH_SERVICE_URL || !process.env.JOB_SERVICE_URL) {
   logger.error('Missing required service URL environment variables!');
   process.exit(1);
 }

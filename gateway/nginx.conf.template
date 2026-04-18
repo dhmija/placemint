@@ -32,13 +32,15 @@ server {
 
     location ~ ^/api/profile(/|$) {
         if ($request_method = 'OPTIONS') { return 204; }
-        rewrite ^/api/profile(/.*) $1 break;
-        rewrite ^/api/profile$ / break;
-        proxy_pass ${PROFILE_SERVICE_URL};
+        rewrite ^/api/profile(/.*) /profile$1 break;
+        rewrite ^/api/profile$ /profile break;
+        proxy_pass ${AUTH_SERVICE_URL};
     }
 
     location /uploads {
-        proxy_pass ${PROFILE_SERVICE_URL};
+        rewrite ^/uploads(/.*) $1 break;
+        rewrite ^/uploads$ / break;
+        proxy_pass ${AUTH_SERVICE_URL}/uploads;
     }
 
     location ~ ^/api/jobs(/|$) {
@@ -62,39 +64,40 @@ server {
         proxy_pass ${NOTIFICATION_SERVICE_URL};
     }
 
-    location ~ ^/api/skills(/|$) {
-        if ($request_method = 'OPTIONS') { return 204; }
-        rewrite ^/api/skills(/.*) $1 break;
-        rewrite ^/api/skills$ / break;
-        proxy_pass ${SKILLS_SERVICE_URL};
-    }
-
     location ~ ^/api/quiz(/|$) {
         if ($request_method = 'OPTIONS') { return 204; }
-        rewrite ^/api/quiz(/.*) $1 break;
-        rewrite ^/api/quiz$ / break;
-        proxy_pass ${QUIZ_SERVICE_URL};
+        rewrite ^/api/quiz(/.*) /quiz$1 break;
+        rewrite ^/api/quiz$ /quiz break;
+        proxy_pass ${SUPPORT_SERVICE_URL};
     }
 
+    # Support Service - Consolidated Announcements, Hackathons, Tasks, Skills, and Messaging
     location ~ ^/api/announcements(/|$) {
         if ($request_method = 'OPTIONS') { return 204; }
         rewrite ^/api/announcements(/.*) $1 break;
         rewrite ^/api/announcements$ / break;
-        proxy_pass ${ANNOUNCEMENT_SERVICE_URL};
+        proxy_pass ${SUPPORT_SERVICE_URL};
     }
 
     location ~ ^/api/hackathons(/|$) {
         if ($request_method = 'OPTIONS') { return 204; }
         rewrite ^/api/hackathons(/.*) $1 break;
         rewrite ^/api/hackathons$ / break;
-        proxy_pass ${HACKATHON_SERVICE_URL};
+        proxy_pass ${SUPPORT_SERVICE_URL};
     }
 
     location ~ ^/api/tasks(/|$) {
         if ($request_method = 'OPTIONS') { return 204; }
         rewrite ^/api/tasks(/.*) $1 break;
         rewrite ^/api/tasks$ / break;
-        proxy_pass ${TASK_SERVICE_URL};
+        proxy_pass ${SUPPORT_SERVICE_URL};
+    }
+
+    location ~ ^/api/skills(/|$) {
+        if ($request_method = 'OPTIONS') { return 204; }
+        rewrite ^/api/skills(/.*) $1 break;
+        rewrite ^/api/skills$ / break;
+        proxy_pass ${SUPPORT_SERVICE_URL};
     }
 
     location ~ ^/api/interview(/|$) {
@@ -104,8 +107,10 @@ server {
         proxy_pass ${INTERVIEW_SERVICE_URL};
     }
 
-    location /api/messaging/ {
+    location ~ ^/api/messaging(/|$) {
         if ($request_method = 'OPTIONS') { return 204; }
-        proxy_pass ${MESSAGING_SERVICE_URL}/;
+        rewrite ^/api/messaging(/.*) $1 break;
+        rewrite ^/api/messaging$ / break;
+        proxy_pass ${SUPPORT_SERVICE_URL};
     }
 }

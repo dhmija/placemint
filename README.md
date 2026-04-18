@@ -18,17 +18,28 @@ PlaceMint is built on a distributed microservices model. This ensures that high-
           [ API Gateway (Nginx) ]
         (Port 5000, Request Routing)
                    │
-      ┌────────────┼────────────┐
-      ▼            ▼            ▼
- [Core Svcs]  [Support Svcs] [Feature Svcs] 
-      │            │            │
-      └────────────┼────────────┘
+      ┌────────────┼────────────────┐
+      ▼            ▼                ▼
+ [Core Svcs] [Support Svc (5006)] [Feature Svcs] 
+      │            │                │
+      └────────────┼────────────────┘
                    │
           [ Event Bus (RabbitMQ) ]
                    │
           [   Data & Caching   ]
       (MongoDB per service / Redis)
 ```
+
+### 📐 Deployment Architecture
+
+PlaceMint is deployed as **7 independent microservices** for optimal scalability and resilience:
+
+- **API Gateway** (Nginx): Single entry point for all client requests, routing to backend services
+- **Core Services** (3): `auth-service` (identity + profiles), `job-service`, `application-service`
+- **Support Service** (1): **Modular consolidation** handling announcements, hackathons, tasks, messaging, skills, and quizzes—each domain retains its own route namespace and separate MongoDB connection for logical separation
+- **Feature Services** (2): `notification-service`, `interview-service` (AI-powered)
+
+This architecture ensures high-load domains scale independently while keeping deployments lean and maintainable.
 
 ## 🤖 AI Features
 
@@ -45,18 +56,12 @@ PlaceMint goes beyond a traditional placement portal by integrating an AI-powere
 | Tier | Service | Port | DB | Responsibility |
 |------|---------|------|----|----------------|
 | **Gateway** | `api-gateway` | 5000 | - | Reverse proxy, path routing, CORS handling |
-| **Core** | `auth-service` | 5001 | MongoDB (`authdb`) | JWT issuance, RBAC, User models, password reset |
-| **Core** | `profile-service` | 5002 | MongoDB (`profiledb`) | Student profiles, resume uploads |
+| **Core** | `auth-service` | 5001 | MongoDB (`authdb`, `profiledb`) | JWT issuance, RBAC, User models, password reset, Student profiles, resume uploads |
 | **Core** | `job-service` | 5003 | MongoDB (`jobdb`) | Job postings, eligibility filtering |
 | **Core** | `application-service`| 5004 | MongoDB (`applicationdb`) | Job applications, state tracking |
 | **Support**| `notification-service`| 5005 | MongoDB (`notifydb`) | Email delivery via Nodemailer + Gmail SMTP, OTP generation |
-| **Support**| `messaging-service` | 5012 | MongoDB (`messagingdb`) | Internal chat / messaging system |
-| **Feature**| `quiz-service` | 5007 | MongoDB (`quizdb`) | Pre-placement assessment quizzes |
-| **Feature**| `task-service` | 5010 | MongoDB (`taskdb`) | Coding assignments (Judge0 integration) |
+| **Support**| `support-service` | 5006 | MongoDB (multi-conn) | **Consolidated**: Announcements, Hackathons, Tasks (Judge0), Messaging, Skills (stateless), Quizzes |
 | **Feature**| `interview-service` | 5011 | MongoDB (`interviewdb`) | AI-powered real-time mock interviews, Gemini API integration, feedback generation |
-| **Feature**| `hackathon-service` | 5009 | MongoDB (`hackathondb`) | Hackathon event management |
-| **Feature**| `announcement-service`| 5008 | MongoDB (`announcedb`) | Global TPO announcements |
-| **Utility**| `skills-service` | 5006 | - | Stateless skills categorization |
 
 ---
 

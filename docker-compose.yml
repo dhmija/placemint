@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   # --- Auth Service (Port 5001) ---
   auth-service:
@@ -13,6 +11,7 @@ services:
       NODE_ENV: ${NODE_ENV}
       PORT: 5001
       MONGO_URI: ${MONGO_URI_AUTH}
+      MONGO_URI_PROFILE: ${MONGO_URI_PROFILE}
       JWT_SECRET: ${JWT_SECRET}
       REDIS_URL: ${REDIS_URL}
       RABBITMQ_URL: ${RABBITMQ_URL}
@@ -24,6 +23,8 @@ services:
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
       TPO_ADMIN_EMAIL: ${TPO_ADMIN_EMAIL}
       SKIP_CAPTCHA_VERIFICATION: ${SKIP_CAPTCHA_VERIFICATION}
+    volumes:
+      - auth-uploads:/app/uploads
     depends_on:
       mongo:
         condition: service_healthy
@@ -31,25 +32,6 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_started
-    networks: [app-network]
-
-  # --- Profile Service (Port 5002) ---
-  profile-service:
-    build:
-      context: ./backend/profile-service
-    container_name: placement_portal_profile
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: 5002
-      MONGO_URI: ${MONGO_URI_PROFILE}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      RABBITMQ_URL: ${RABBITMQ_URL}
-    volumes:
-      - profile-uploads:/app/profile-service/uploads
-    depends_on:
-      mongo:
-        condition: service_healthy
     networks: [app-network]
 
   # --- Job Service (Port 5003) ---
@@ -79,16 +61,14 @@ services:
       NODE_ENV: ${NODE_ENV}
       PORT: 5004
       MONGO_URI: ${MONGO_URI_APP}
-      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       JOB_SERVICE_URL: ${JOB_SERVICE_URL}
       NOTIFICATION_SERVICE_URL: ${NOTIFICATION_SERVICE_URL}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      SUPPORT_SERVICE_URL: ${SUPPORT_SERVICE_URL:-http://support-service:5006}
       RABBITMQ_URL: ${RABBITMQ_URL}
     depends_on:
       mongo:
         condition: service_healthy
-      profile-service:
-        condition: service_started
       job-service:
         condition: service_started
     networks: [app-network]
@@ -117,95 +97,18 @@ services:
         condition: service_started
     networks: [app-network]
 
-  # --- Skills Service (Port 5006) ---
-  skills-service:
+  # --- Support Service (Port 5006) - Consolidated service for: announcements, hackathons, tasks, messaging, skills, quiz ---
+  support-service:
     build:
-      context: ./backend/skills-service
-    container_name: placement_portal_skills
+      context: ./backend/support-service
+    container_name: placement_portal_support
     restart: unless-stopped
     environment:
       NODE_ENV: ${NODE_ENV}
       PORT: 5006
-    networks: [app-network]
-
-  # --- Quiz Service (Port 5007) ---
-  quiz-service:
-    build:
-      context: ./backend/quiz-service
-    container_name: placement_portal_quiz
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: 5007
-      MONGO_URI: ${MONGO_URI_QUIZ}
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/placemint}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       APPLICATION_SERVICE_URL: ${APPLICATION_SERVICE_URL}
-      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
-    depends_on:
-      mongo:
-        condition: service_healthy
-    networks: [app-network]
-
-  # --- Announcement Service (Port 5008) ---
-  announcement-service:
-    build:
-      context: ./backend/announcement-service
-    container_name: placement_portal_announcement
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: 5008
-      MONGO_URI: ${MONGO_URI_ANNOUNCE}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-    depends_on:
-      mongo:
-        condition: service_healthy
-    networks: [app-network]
-
-  # --- Hackathon Service (Port 5009) ---
-  hackathon-service:
-    build:
-      context: ./backend/hackathon-service
-    container_name: placement_portal_hackathon
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: 5009
-      MONGO_URI: ${MONGO_URI_HACKATHON}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-    depends_on:
-      mongo:
-        condition: service_healthy
-    networks: [app-network]
-
-  # --- Messaging Service (Port 5012) ---
-  messaging-service:
-    build:
-      context: ./backend/messaging-service
-    container_name: placement_portal_messaging
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: 5012
-      MONGO_URI: ${MONGO_URI_MESSAGING}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      mongo:
-        condition: service_healthy
-    networks: [app-network]
-
-  # --- Task Service (Port 5010) (NEW) ---
-  task-service:
-    build:
-      context: ./backend/task-service
-    container_name: placement_portal_task
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: 5010
-      MONGO_URI: ${MONGO_URI_TASK}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       JUDGE0_API_KEY: ${JUDGE0_API_KEY}
       JUDGE0_API_HOST: ${JUDGE0_API_HOST}
     depends_on:
@@ -238,19 +141,21 @@ services:
     ports:
       - "5000:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./gateway/nginx.conf.template:/etc/nginx/conf.d/default.conf.template:ro
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - JOB_SERVICE_URL=http://job-service:5003
+      - APPLICATION_SERVICE_URL=http://application-service:5004
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5005
+      - SUPPORT_SERVICE_URL=http://support-service:5006
+      - INTERVIEW_SERVICE_URL=http://interview-service:5011
+    command: /bin/sh -c "envsubst '$$AUTH_SERVICE_URL,$$JOB_SERVICE_URL,$$APPLICATION_SERVICE_URL,$$NOTIFICATION_SERVICE_URL,$$SUPPORT_SERVICE_URL,$$INTERVIEW_SERVICE_URL' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     depends_on:
-      - messaging-service
       - auth-service
-      - profile-service
       - job-service
       - application-service
       - notification-service
-      - skills-service
-      - quiz-service
-      - announcement-service
-      - hackathon-service
-      - task-service
+      - support-service
       - interview-service
     networks: [app-network]
 
@@ -306,7 +211,7 @@ services:
 
 volumes:
   mongo-data:
-  profile-uploads:
+  auth-uploads:
 
 networks:
   app-network:
