@@ -1,0 +1,179 @@
+services:
+  - type: web
+    name: placemint-auth-service
+    env: docker
+    rootDir: backend/auth-service
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: MONGO_URI
+        sync: false
+      - key: MONGO_URI_PROFILE
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: RECAPTCHA_SECRET_KEY
+        sync: false
+      - key: TPO_ADMIN_EMAIL
+        sync: false
+      - key: SKIP_CAPTCHA_VERIFICATION
+        value: false
+
+  - type: web
+    name: placemint-job-service
+    env: docker
+    rootDir: backend/job-service
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5003
+      - key: MONGO_URI
+        sync: false
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+
+  - type: web
+    name: placemint-application-service
+    env: docker
+    rootDir: backend/application-service
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5004
+      - key: MONGO_URI
+        sync: false
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: JOB_SERVICE_URL
+        sync: false
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false
+      - key: SUPPORT_SERVICE_URL
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+
+  - type: web
+    name: placemint-notification-service
+    env: docker
+    rootDir: backend/notification-service
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5005
+      - key: MONGO_URI
+        sync: false
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+  - type: web
+    name: placemint-support-service
+    env: docker
+    rootDir: backend/support-service
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5006
+      - key: MONGO_URI
+        sync: false
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: APPLICATION_SERVICE_URL
+        sync: false
+      - key: JUDGE0_API_KEY
+        sync: false
+      - key: JUDGE0_API_HOST
+        sync: false
+
+  - type: web
+    name: placemint-interview-service
+    env: docker
+    rootDir: backend/interview-service
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5011
+      - key: MONGO_URI_INTERVIEW
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: AUTH_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: placemint-api-gateway
+    env: docker
+    rootDir: gateway
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: JOB_SERVICE_URL
+        sync: false
+      - key: APPLICATION_SERVICE_URL
+        sync: false
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false
+      - key: SUPPORT_SERVICE_URL
+        sync: false
+      - key: INTERVIEW_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: placemint-frontend
+    env: docker
+    rootDir: frontend
+    plan: starter
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false
+      - key: REACT_APP_RECAPTCHA_SITE_KEY
+        sync: false
