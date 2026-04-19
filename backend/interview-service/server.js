@@ -21,13 +21,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use('/', interviewRoutes);
-
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'interview-service', timestamp: new Date().toISOString() });
 });
+
+// Routes
+app.use('/', interviewRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
